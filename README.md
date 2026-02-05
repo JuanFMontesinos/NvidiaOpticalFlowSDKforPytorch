@@ -32,9 +32,21 @@ The package comes with basic functionality for optical flow:
 - When you pip install torch, it comes with its own CUDA binaries. Get the same or higher CUDA toolkit version as your PyTorch installation.
 
 # Installation
-## pip / uv
+## Precompiled binaries (experimental)
+  ```bash
+  uv add torch-nvidia-of-sdk
+  # or
+  uv add torch-nvidia-of-sdk[full] # To have headless opencv for visualization examples
+  ```
+  If you still use pip
+  ```bash
+  pip install torch-nvidia-of-sdk
+  # or
+  pip install torch-nvidia-of-sdk[full] # To have headless opencv for
+  ```
 
-## Build from Source
+  
+## Build from Source (Recommended if precompiled binaries do not work)
 This repository uses uv. 
 A oneshot comand to build, install and test the package would be:
 
