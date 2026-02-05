@@ -33,6 +33,8 @@ The package comes with basic functionality for optical flow:
 
 # Installation
 ## Precompiled binaries (experimental)
+They are compiled against PyTorch's CUDA binaries to ensure compatibility and standalone functionality without requiring the full CUDA toolkit.
+But ofc this depends on the exact PyTorch version and CUDA version you have. Very likely will work with Torch>=2.10 and CUDA>=12.8
   ```bash
   uv add torch-nvidia-of-sdk
   # or

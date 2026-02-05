@@ -1,6 +1,6 @@
 [project]
 name = "torch-nvidia-of-sdk"
-version = "5.0.1" # Matches that of Nvidia SDK
+version = "5.0.2" # Matches that of Nvidia SDK
 description = "PyTorch bindings for NVIDIA Optical Flow SDK, providing hardware-accelerated optical flow computation with PyTorch end-to-end integration in Nvidia and Python."
 readme = "README.md"
 authors = [
@@ -21,7 +21,14 @@ full = [
 ]
 
 [build-system]
-requires = ["scikit-build-core", "pybind11", "torch>=2.10.0", "numpy>2.0.0"]
+requires = [
+    "scikit-build-core",
+    "pybind11",
+    "torch>=2.10.0",          
+    "numpy",                 
+    "nvidia-cuda-runtime-cu12",
+    "nvidia-cudnn-cu12"
+]
 build-backend = "scikit_build_core.build"
 
 [tool.scikit-build]

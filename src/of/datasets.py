@@ -69,7 +69,13 @@ class CSEMDataset(OpticalFlowDataset):
     """
 
     def setup(self):
-        frame_paths = sorted((self.root_dir / "images").glob("*.png"))
+        img_dir = self.root_dir / "images"
+        if not img_dir.exists():
+            raise ValueError(
+                f"Images directory not found: {img_dir}. Maybe your dataset is not structured as expected?"
+            )
+
+        frame_paths = sorted(img_dir.glob("*.png"))
         for i in range(len(frame_paths) - 1):
             current_frame = frame_paths[i]
             reference_frame = frame_paths[i + 1]
