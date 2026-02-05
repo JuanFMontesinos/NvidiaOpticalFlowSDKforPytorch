@@ -51,7 +51,7 @@ This repository uses uv.
 A oneshot comand to build, install and test the package would be:
 
 ```bash
-rm -rf build _skbuild .venv  && CC=gcc CXX=g++ uv sync --extra full --reinstall-package torch-nvidia-of-sdk && uv run examples/minimal_example.py
+rm -rf build _skbuild .venv  && CC=gcc CXX=g++ uv sync --extra full --reinstall-package torch-nvidia-of-sdk && uv run --extra full examples/minimal_example.py
 ```
 `--reinstall-package` forces `uv` to re-compile the package. Clearing caches is not really needed but I'm paranoid.
 `--extra full` is analogous to pip extras `pip install torch-nvidia-of-sdk[full]`. It just adds headless opencv for visualization
@@ -64,7 +64,7 @@ Try the minimal example to get started quickly:
 
 ```bash
 # Run the minimal example (uses sample frames from assets/)
-uv run  examples/minimal_example.py
+uv run  --extra full examples/minimal_example.py
 ```
 
 This will:
