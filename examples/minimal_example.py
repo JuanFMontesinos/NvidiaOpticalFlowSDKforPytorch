@@ -48,7 +48,7 @@ def main():
 
     print(f"   Frame 1: {frame1.shape} {frame1.dtype}")
     print(f"   Frame 2: {frame2.shape} {frame2.dtype}")
-    
+
     # Load ground truth flow if available
     gt_flow = None
     if gt_flow_path.exists():
@@ -59,7 +59,6 @@ def main():
     print("\n🔄 Converting to CUDA tensors...")
     frame1_tensor = torch.from_numpy(frame1).cuda()
     frame2_tensor = torch.from_numpy(frame2).cuda()
-
 
     # ========== 4. Initialize Optical Flow Engine ==========
     print("\n⚙️  Initializing NVOF engine...")
@@ -80,12 +79,12 @@ def main():
 
     # ========== 5. Compute Optical Flow ==========
     print("\n🔥 Computing optical flow...")
-    
+
     print(" Upsampling disabled:")
     flow = flow_engine.compute_flow(frame1_tensor, frame2_tensor, upsample=False)
     flow_np = flow.cpu().numpy()
     print(f"   Flow shape: {flow_np.shape}")
-    
+
     print(" Upsampling enabled:")
     # Without upsampling, output flow is at grid resolution
     flow = flow_engine.compute_flow(frame1_tensor, frame2_tensor, upsample=True)
@@ -111,7 +110,6 @@ def main():
     imageio.imwrite(flow_vis_path, flow_rgb)
     print(f"   ✓ Saved visualization: {flow_vis_path}")
 
-
     # ========== 8. Create Side-by-Side Comparison ==========
     print("\n📊 Creating side-by-side comparison...")
 
@@ -119,12 +117,12 @@ def main():
     arrays = [frame1]
     positions = [(0, 0)]
     kwargs_list = [{"caption": "Input Frame"}]
-    
+
     if gt_flow is not None:
         arrays.append(gt_flow)
         positions.append((1, 0))
         kwargs_list.append({"caption": "Ground Truth Flow", "convention": "middlebury"})
-    
+
     arrays.append(flow_np)
     positions.append((2, 0) if gt_flow is not None else (1, 0))
     kwargs_list.append({"caption": "Predicted Flow", "convention": "middlebury"})
@@ -139,7 +137,6 @@ def main():
     comparison_path = output_dir / "comparison.png"
     imageio.imwrite(comparison_path, comparison)
     print(f"   ✓ Saved comparison: {comparison_path}")
-
 
 
 if __name__ == "__main__":

@@ -1,3 +1,3 @@
-from . import io, visualization, metrics, datasets # noqa
+from . import io, visualization, metrics, datasets  # noqa
 
-from .methods import TorchNVOpticalFlow # noqa
+from .methods import TorchNVOpticalFlow  # noqa

@@ -31,3 +31,11 @@ build.verbose = true
 
 [tool.ruff]
 line-length = 120
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401"]  # Allow unused imports in __init__.py files
+
+[dependency-groups]
+dev = [
+    "ruff>=0.15.0",
+]

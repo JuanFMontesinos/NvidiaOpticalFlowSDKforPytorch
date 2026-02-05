@@ -58,12 +58,8 @@ class TorchNVOpticalFlow(_C_TorchNVOpticalFlow):
             input = torch.cat([alpha_input, input], dim=-1).to(f"cuda:{self.gpu_id()}")
 
         if reference.shape[-1] == 3:
-            alpha_reference = (
-                reference.sum(dim=-1, keepdim=True).div(3).clamp(0, 255).byte()
-            )
-            reference = torch.cat([alpha_reference, reference], dim=-1).to(
-                f"cuda:{self.gpu_id()}"
-            )
+            alpha_reference = reference.sum(dim=-1, keepdim=True).div(3).clamp(0, 255).byte()
+            reference = torch.cat([alpha_reference, reference], dim=-1).to(f"cuda:{self.gpu_id()}")
 
         # Checks performed in C++
         return super().compute_flow(input, reference, upsample=upsample).float() / 32.0

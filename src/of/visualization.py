@@ -86,9 +86,7 @@ def _get_color_wheel() -> np.ndarray:
     return colorwheel / 255.0
 
 
-def flow_to_color(
-    flow: np.ndarray, max_flow: Optional[float] = None, convention: str = "middlebury"
-) -> np.ndarray:
+def flow_to_color(flow: np.ndarray, max_flow: Optional[float] = None, convention: str = "middlebury") -> np.ndarray:
     """
     Convert optical flow to an RGB image using the standard color wheel.
 
@@ -256,14 +254,10 @@ def compare_flows(
             raise ValueError("compare_flows requires 3 axes")
 
     # 1. Visualize Prediction
-    visualize_flow(
-        flow_pred, ax=axes[0], title=titles[0], max_flow=max_flow, convention=convention
-    )
+    visualize_flow(flow_pred, ax=axes[0], title=titles[0], max_flow=max_flow, convention=convention)
 
     # 2. Visualize GT
-    visualize_flow(
-        flow_gt, ax=axes[1], title=titles[1], max_flow=max_flow, convention=convention
-    )
+    visualize_flow(flow_gt, ax=axes[1], title=titles[1], max_flow=max_flow, convention=convention)
 
     # 3. Visualize Endpoint Error (EPE)
     epe = np.linalg.norm(flow_pred - flow_gt, axis=2)
@@ -347,9 +341,7 @@ def concatenate_flows(
             img_chunk_bgr = cv2.cvtColor(arr, cv2.COLOR_RGB2BGR)
 
         else:
-            raise ValueError(
-                f"Array has {arr.shape[2]} channels. Expected 2 (Flow) or 3 (RGB Image)."
-            )
+            raise ValueError(f"Array has {arr.shape[2]} channels. Expected 2 (Flow) or 3 (RGB Image).")
 
         # --- 2. Add Text (OpenCV draws on BGR) ---
         caption = kw.get("caption", None)
