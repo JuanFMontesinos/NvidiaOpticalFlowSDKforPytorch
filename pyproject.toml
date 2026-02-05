@@ -1,0 +1,33 @@
+[project]
+name = "torch-nvidia-of-sdk"
+version = "5.0.0" # Matches that of Nvidia SDK
+description = "PyTorch bindings for NVIDIA Optical Flow SDK, providing hardware-accelerated optical flow computation with PyTorch end-to-end integration in Nvidia and Python."
+readme = "README.md"
+authors = [
+    { name = "Juan Montesinos", email = "jfmontgar@gmail.com" }
+]
+requires-python = ">=3.13"
+dependencies = [
+    "imageio[ffmpeg]>=2.37.2",
+    "matplotlib>=3.10.8",
+    "numpy",
+    "torch>=2.10.0",
+    "tqdm>=4.67.2",
+]
+
+[project.optional-dependencies]
+full = [
+    "opencv-contrib-python-headless>=4.13.0.90",
+]
+
+[build-system]
+requires = ["scikit-build-core", "pybind11", "torch>=2.10.0", "numpy>2.0.0"]
+build-backend = "scikit_build_core.build"
+
+[tool.scikit-build]
+wheel.packages = ["src/of"]
+wheel.py-api = "py3"
+build.verbose = true
+
+[tool.ruff]
+line-length = 120
