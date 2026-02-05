@@ -89,34 +89,19 @@ def _get_color_wheel() -> np.ndarray:
 def flow_to_color(flow: np.ndarray, max_flow: Optional[float] = None, convention: str = "middlebury") -> np.ndarray:
     """
     Convert optical flow to an RGB image using the standard color wheel.
-
+    
     Args:
         flow: Optical flow array of shape (H, W, 2).
-
         max_flow: Normalization factor.
-                  - If None: Defaults to the max magnitude in the flow array.
-                  - If float: Any flow larger than this is clamped/desaturated.
-
-        convention: Controls the default normalization behavior if max_flow is None.
-                   - 'middlebury': Always normalizes to the current image max.
-                   - 'kitti': Defaults to a fixed scale (e.g. 3.0) if max_flow is None.
-
-    Returns:
-        np.ndarray: RGB image of shape (H, W, 3).
-                    Valid flow is colored (0 motion = White).
-                    Invalid/NaN flow is Black.
+        convention: 'middlebury' (adapts to image max) vs 'kitti' (fixed standard scale).
     """
-
     assert flow.ndim == 3 and flow.shape[2] == 2
 
     u = flow[:, :, 0]
     v = flow[:, :, 1]
 
-    # 1. Detect Invalid Flow (NaN, Inf, or > 1e9)
-    # Middlebury uses 1e9 as a magic number for "unknown"
+    # Detect Invalid Flow (NaN, Inf, or > 1e9)
     idx_unknown = (np.abs(u) > 1e9) | (np.abs(v) > 1e9) | np.isnan(u) | np.isnan(v)
-
-    # Temporarily clean data for calculation (avoid warnings)
     u = np.where(idx_unknown, 0, u)
     v = np.where(idx_unknown, 0, v)
 
@@ -132,28 +117,33 @@ def flow_to_color(flow: np.ndarray, max_flow: Optional[float] = None, convention
     colorwheel = _get_color_wheel()
     col0 = colorwheel[k0]
     col1 = colorwheel[k1]
-
+    
+    # Get the base Hue
     col = (1 - f)[:, :, None] * col0 + f[:, :, None] * col1
 
+    # Normalization (The only difference between kitti/middlebury)
     if max_flow is None:
         if convention.lower() == "kitti":
-            max_flow = 3.0
+            # KITTI 2012/2015 often uses a fixed scale (e.g., 3.0px) for consistent comparison
+            # However, many devkits default to adapting to max_flow if not specified.
+            # Setting a fixed default ensures fast motions don't "wash out" slow motions across a video.
+            max_flow = 3.0 
         else:
+            # Middlebury standard: normalize by the current frame's max motion
             max_flow = np.max(mag)
             if max_flow == 0:
                 max_flow = 1.0
 
-    col *= mag[:, :, None] / max_flow
+    # Apply Saturation (White -> Color)
+    # The logic: 0 motion = 1.0 (White). Max motion = 0.0 (Vivid Color)
+    col_mag = np.clip(mag / max_flow, 0, 1)[:, :, None]
+    
+    # Formula: Result = (1 - Saturation) * WHITE + Saturation * HUE
+    # Since White is [1, 1, 1], this simplifies to:
+    col = (1 - col_mag) * 1.0 + col_mag * col
 
-    # Handle saturation
-    idx_sat = mag > max_flow
-    if np.any(idx_sat):
-        col[idx_sat] = col[idx_sat] * (max_flow / mag[idx_sat])[:, None]
-        col[idx_sat] = col[idx_sat] * 0.75 + 0.25
-
-    col = np.clip(col, 0, 1)
-
-    # 2. Apply Black for Unknown/Invalid pixels
+    # Mask Invalid Pixels -> Black
+    # This is the ONLY time Black should appear (e.g. KITTI Sky)
     if np.any(idx_unknown):
         col[idx_unknown] = np.array([0, 0, 0])
 
