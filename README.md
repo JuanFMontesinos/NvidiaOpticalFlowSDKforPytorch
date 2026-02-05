@@ -44,7 +44,7 @@ rm -rf build _skbuild .venv  && CC=gcc CXX=g++ uv sync --extra full --reinstall-
 `--reinstall-package` forces `uv` to re-compile the package. Clearing caches is not really needed but I'm paranoid.
 `--extra full` is analogous to pip extras `pip install torch-nvidia-of-sdk[full]`. It just adds headless opencv for visualization
 ## Compiling your own wheel
-`CC=gcc CXX=g++ uv build --wheel --package csem-optical-flow` will build a wheel in `dist/` that you can install with pip.
+`CC=gcc CXX=g++ uv build --wheel --package torch-nvidia-of-sdk` will build a wheel in `dist/` that you can install with pip.
 
 # Quick Start
 
@@ -52,8 +52,7 @@ Try the minimal example to get started quickly:
 
 ```bash
 # Run the minimal example (uses sample frames from assets/)
-cd examples
-python minimal_example.py
+uv run  examples/minimal_example.py
 ```
 
 This will:
